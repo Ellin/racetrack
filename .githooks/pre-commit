@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Run this branch if AI_LOG.md is not staged. Reminds to log AI usage.
+if ! git diff --cached --name-only | grep -qx "AI_LOG.md"; then
+  printf "AI_LOG.md is not in this commit. Did you use AI? (y/n) "
+
+  # Wait for one line of input and store it in the variable `answer`.
+  # `< /dev/tty` reads from the keyboard, because Git doesn't connect a hook's normal input to the terminal.
+  read answer < /dev/tty
+
+  if [ "$answer" = "y" ]; then
+    echo "Add your AI_LOG.md entry, then commit again."
+    exit 1    # cancel the commit
+  fi
+fi
+exit 0        # go ahead
