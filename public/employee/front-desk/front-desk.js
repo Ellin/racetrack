@@ -22,6 +22,25 @@ createSessionButton.addEventListener("click", () => {
     selectedRace.textContent = `Race ${newRace.id}`
   })
 })
+const deleteRaceButton = document.querySelector("#delete-race")
+deleteRaceButton.addEventListener("click", () => {
+  if (selectedRace.id === 0) {
+    alert("Select a Race")
+    return
+  }
+
+  sessions = sessions.filter((session) => {
+    return session.id !== selectedRaceId
+  })
+
+  const raceButton = document.querySelector(`#race-${selectedRaceId}`)
+  raceButton.remove()
+
+  selectedRace.textContent = "Nothing selected"
+  selectedRaceId = 0
+
+})
+
 
 let drivers = []
 let driverId = 1
@@ -48,11 +67,14 @@ saveDriver.addEventListener("click", () => {
   const eachDriver = document.createElement("div")
   const driverText = document.createElement("span")
   const deleteButton = document.createElement("button")
+  const editButton = document.createElement("button")
 
   driverText.textContent = newDriver.name
-  deleteButton.textContent = "delete"
+  deleteButton.textContent = "Delete"
+  editButton.textContent = "Edit"
   eachDriver.appendChild(driverText)
   eachDriver.appendChild(deleteButton)
+  eachDriver.appendChild(editButton)
   driverList.appendChild(eachDriver)
 
   driverName.value = ""
@@ -62,6 +84,22 @@ saveDriver.addEventListener("click", () => {
     })
 
     eachDriver.remove()
+  })
+
+  editButton.addEventListener("click", () => {
+    const name = prompt("Enter new name", newDriver.name)
+    if (name === "") {
+      return
+    }
+    const newName = name.trim()
+    if (newName === "") {
+      alert("Enter a name")
+    }
+    if (duplicatName(drivers, name)) {
+      alert("Name already exists")
+    }
+    newDriver.name = name
+    driverText.textContent = newName
   })
 })
 
