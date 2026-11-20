@@ -44,10 +44,25 @@ saveDriver.addEventListener("click", () => {
   drivers.push(newDriver)
   driverId++
   console.log("all drivers:", drivers)
-  const eachDriver = document.createElement("p")
-  eachDriver.textContent = newDriver.name
+
+  const eachDriver = document.createElement("div")
+  const driverText = document.createElement("span")
+  const deleteButton = document.createElement("button")
+
+  driverText.textContent = newDriver.name
+  deleteButton.textContent = "delete"
+  eachDriver.appendChild(driverText)
+  eachDriver.appendChild(deleteButton)
   driverList.appendChild(eachDriver)
+
   driverName.value = ""
+  deleteButton.addEventListener("click", () => {
+    drivers = drivers.filter((driver) => {
+      return driver.id !== newDriver.id
+    })
+
+    eachDriver.remove()
+  })
 })
 
 const duplicatName = (arr, name) => {
