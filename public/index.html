@@ -9,12 +9,32 @@
 </head>
 
 <body>
+
+  <div>
+    <h2>Drivers Name</h2>
+    <input type="text" id="driver-name" placeholder="Enter driver name">
+    <button id="save-driver">Save Driver</button>
+    <h3>Available Drivers</h3>
+    <div id="driver-list"></div>
+  </div>
+
   <div>
     <h1> Upcoming races</h1>
     <button id="create-race">Create a race</button>
     <div id="race-list"></div>
     <h2>Selected race</h2>
-    <div id="selected-race">Nothing selected</div>
+    <div id="selected-race">
+      <h2 id="selected-race-name">Nothing selected</h2>
+
+      <button id="edit-race">Edit race</button>
+      <button id="delete-race">Delete race</button>
+
+      <div id="edit-race-form">
+
+      </div>
+
+    </div>
+
   </div>
 </body>
 
