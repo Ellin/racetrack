@@ -10,6 +10,10 @@
 - **Changed or rejected:** what you changed or threw away, and why.
 ```
 ------------------------------------------------------------------------
+## 3. Instructions for configuring environment variables
+- **Asked:** Write docs for configuring environment variable.
+- **Kept:** Added the new instructions to CONTRIBUTING.md.
+
 ## 2. Configure npm start
 - **Asked:** How to read environment variables from an environment file.
 - **Kept:** Configuring npm start to use variables from .env file.
