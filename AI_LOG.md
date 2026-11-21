@@ -10,6 +10,9 @@
 - **Changed or rejected:** what you changed or threw away, and why.
 ```
 ------------------------------------------------------------------------
+## 2. Configure npm start
+- **Asked:** How to read environment variables from an environment file.
+- **Kept:** Configuring npm start to use variables from .env file.
 
 ## 1. AI_LOG
 - **Asked:** Create git commit hook for reminding to use the AI_LOG and also documenting the hook set up for team members.
