@@ -10,6 +10,11 @@
 - **Changed or rejected:** what you changed or threw away, and why.
 ```
 ------------------------------------------------------------------------
+## 4. DOM Manipulation
+- **Asked:** Explain how to dynamically create dropdown options using JavaScript, manage elements.
+- **Kept:** updating dropdown options dynamically.
+- **Changed or rejected:** Rejected rebuilding dropdown options using loops, preferring to update individual elements when data changes.
+
 
 ## 1. AI_LOG
 - **Asked:** Create git commit hook for reminding to use the AI_LOG and also documenting the hook set up for team members.

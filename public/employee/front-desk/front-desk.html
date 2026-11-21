@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-  <link href="front-desk.js">
   <meta charset="UTF-8">
   <title>Front desk</title>
   <script src="/employee/front-desk/front-desk.js" defer></script>
@@ -29,8 +28,14 @@
       <button id="edit-race">Edit race</button>
       <button id="delete-race">Delete race</button>
 
-      <div id="edit-race-form">
-
+      <div id="edit-race-form" hidden>
+        <select id="choose-driver">
+          <option value="">Choose a driver</option>
+        </select>
+        <select id="choose-car">
+          <option value="">Choose a Car</option>
+        </select>
+        <button id="add-to-race">Add to Race</button>
       </div>
 
     </div>
