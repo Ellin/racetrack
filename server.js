@@ -1,3 +1,4 @@
+import "./config.js" // Runs config.js, checking if access keys were set
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
