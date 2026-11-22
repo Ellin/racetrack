@@ -15,6 +15,13 @@
 - **Kept:** updating dropdown options dynamically.
 - **Changed or rejected:** Rejected rebuilding dropdown options using loops, preferring to update individual elements when data changes.
 
+## 3. Instructions for configuring environment variables
+- **Asked:** Write docs for configuring environment variable.
+- **Kept:** Added the new instructions to CONTRIBUTING.md.
+
+## 2. Configure npm start
+- **Asked:** How to read environment variables from an environment file.
+- **Kept:** Configuring npm start to use variables from .env file.
 
 ## 1. AI_LOG
 - **Asked:** Create git commit hook for reminding to use the AI_LOG and also documenting the hook set up for team members.
