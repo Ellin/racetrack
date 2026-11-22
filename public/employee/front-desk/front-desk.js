@@ -219,3 +219,20 @@ function displayRaceDetail() {
     raceDrivers.append(raceDetailText)
   })
 }
+
+// Create socket without connecting (only attempt on form submission)
+const frontDeskSocket = io("/front-desk", { autoConnect: false });
+setSocketListeners(frontDeskSocket);
+setupKeyForm(frontDeskSocket);
+
+function setSocketListeners(socket) {
+  socket.on('connect', () => {
+    alert("connected");
+    document.body.querySelector('.key-form').classList.add('hidden');
+    document.body.querySelector('.front-desk-view').classList.remove('hidden');
+  })
+
+  socket.on('connect_error', (err) => {
+    alert(err.message);
+  })
+}

@@ -1,0 +1,19 @@
+.hidden {
+  display: none;
+}
+
+body {
+  margin: 30px;
+}
+
+input,
+select,
+button {
+  padding: 8px;
+  margin: 5px;
+}
+
+button {
+  background: yellow;
+  cursor: pointer;
+}

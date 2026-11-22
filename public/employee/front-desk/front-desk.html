@@ -4,45 +4,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Front desk</title>
+  <link rel="stylesheet" href="/employee/front-desk/front-desk.css">
+  <script src="/socket.io/socket.io.js" defer></script>
+  <script src="/shared/key-form.js" defer></script>
   <script src="/employee/front-desk/front-desk.js" defer></script>
 </head>
 
 <body>
-
-  <div>
-    <h2>Drivers Name</h2>
-    <input type="text" id="driver-name" placeholder="Enter driver name">
-    <button id="save-driver">Save Driver</button>
-    <h3>Available Drivers</h3>
-    <div id="driver-list"></div>
-  </div>
-
-  <div>
-    <h1> Upcoming races</h1>
-    <button id="create-race">Create a race</button>
-    <div id="race-list"></div>
-    <h2>Selected race</h2>
-    <div id="selected-race">
-      <h3 id="selected-race-name">Nothing selected</h3>
-
-      <button id="edit-race">Edit race</button>
-      <button id="delete-race">Delete race</button>
-
-      <div id="edit-race-form" hidden>
-        <select id="choose-driver">
-          <option value="">Choose a driver</option>
-        </select>
-        <select id="choose-car">
-          <option value="">Choose a Car</option>
-        </select>
-        <button id="add-to-race">Add to Race</button>
-      </div>
-      <h3>Drivers</h3>
-      <div id="race-drivers"></div>
-
+  <div class="front-desk-view hidden">
+    <div>
+      <h2>Drivers Name</h2>
+      <input type="text" id="driver-name" placeholder="Enter driver name">
+      <button id="save-driver">Save Driver</button>
+      <h3>Available Drivers</h3>
+      <div id="driver-list"></div>
     </div>
 
-  </div>
+    <div>
+      <h1> Upcoming races</h1>
+      <button id="create-race">Create a race</button>
+      <div id="race-list"></div>
+      <h2>Selected race</h2>
+      <div id="selected-race">
+        <h3 id="selected-race-name">Nothing selected</h3>
+
+        <button id="edit-race">Edit race</button>
+        <button id="delete-race">Delete race</button>
+
+        <div id="edit-race-form" hidden>
+          <select id="choose-driver">
+            <option value="">Choose a driver</option>
+          </select>
+          <select id="choose-car">
+            <option value="">Choose a Car</option>
+          </select>
+          <button id="add-to-race">Add to Race</button>
+        </div>
+        <h3>Drivers</h3>
+        <div id="race-drivers"></div>
+
+      </div>
+
+    </div>
 </body>
+</div>
 
 </html>
