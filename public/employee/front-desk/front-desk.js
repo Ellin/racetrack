@@ -24,6 +24,7 @@ createSessionButton.addEventListener("click", () => {
     selectedRaceId = newRace.id
     selectedRace.textContent = `Race ${newRace.id}`
     editRaceForm.hidden = true
+    displayRaceDetail()
   })
 })
 
@@ -46,7 +47,8 @@ deleteRaceButton.addEventListener("click", () => {
   if (sessions.length === 0) {
     i = 1
   }
-
+  editRaceForm.hidden = true
+  displayRaceDetail()
 })
 
 let drivers = []
@@ -107,6 +109,7 @@ saveDriver.addEventListener("click", () => {
     newDriver.name = name
     driverText.textContent = newName
     option.textContent = newName
+    displayRaceDetail()
   })
   driverName.value = ""
   deleteButton.addEventListener("click", () => {
@@ -116,6 +119,7 @@ saveDriver.addEventListener("click", () => {
 
     eachDriver.remove()
     option.remove()
+    displayRaceDetail()
   })
 
 })
@@ -150,3 +154,68 @@ editRaceButton.addEventListener("click", () => {
   editRaceForm.hidden = false
 
 })
+const addToRace = document.querySelector("#add-to-race")
+const raceDrivers = document.querySelector("#race-drivers")
+
+addToRace.addEventListener("click", () => {
+  const session = sessions.find((session) => {
+    return session.id === selectedRaceId
+  })
+
+  if (!session) {
+    alert("Choose a Race")
+    return
+  }
+
+  if (chooseDriver.value === "" || chooseCar.value === "") {
+    alert("Choose a driver and Car")
+    return
+  }
+  const id = Number(chooseDriver.value)
+  const car = Number(chooseCar.value)
+
+  if (session.drivers.length >= 8) {
+    alert("Maximum 8 drivers allowed")
+    return
+  }
+  const driverExists = session.drivers.some((driver) => {
+    return driver.driverId === id
+  })
+  if (driverExists) {
+    alert("Driver already assigned")
+    return
+  }
+  const carExists = session.drivers.some((driver) => {
+    return driver.car === car
+  })
+  if (carExists) {
+    alert("Car already assigned")
+    return
+  }
+  session.drivers.push({ driverId: id, car: car })
+  chooseDriver.value = ""
+  chooseCar.value = ""
+  console.log(session)
+  displayRaceDetail()
+})
+
+function displayRaceDetail() {
+  raceDrivers.textContent = ""
+  const session = sessions.find((session) => {
+    return session.id === selectedRaceId
+  })
+  if (!session) {
+    return
+  }
+  session.drivers.forEach((input) => {
+    const driver = drivers.find((driver) => {
+      return driver.id === input.driverId
+    })
+    if (!driver) {
+      return
+    }
+    const raceDetailText = document.createElement("p")
+    raceDetailText.textContent = `${driver.name} - Car ${input.car}`
+    raceDrivers.append(raceDetailText)
+  })
+}

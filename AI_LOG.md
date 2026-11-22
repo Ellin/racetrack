@@ -10,6 +10,11 @@
 - **Changed or rejected:** what you changed or threw away, and why.
 ```
 ------------------------------------------------------------------------
+## 5. JavaScript Array Methods and DOM Updates
+- **Asked:** Explain how find(), some() work, how to validate duplicate values, and help debug race and driver management.
+- **Kept:** Concepts of array methods, validation, and reusable function for displaying updated data.
+- **Changed or rejected:** Rejected using nested loops and displaying data directly inside event listeners, chose a separate reusable function.
+
 ## 4. DOM Manipulation
 - **Asked:** Explain how to dynamically create dropdown options using JavaScript, manage elements.
 - **Kept:** updating dropdown options dynamically.
