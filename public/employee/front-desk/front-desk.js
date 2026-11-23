@@ -1,9 +1,26 @@
+// Create socket without connecting (only attempt on form submission)
+const frontDeskSocket = io("/front-desk", { autoConnect: false });
+setSocketListeners(frontDeskSocket);
+setupKeyForm(frontDeskSocket);
+
+function setSocketListeners(socket) {
+  socket.on('connect', () => {
+    alert("connected");
+    document.body.querySelector('.key-form').classList.add('hidden');
+    document.body.querySelector('.front-desk-view').classList.remove('hidden');
+  })
+
+  socket.on('connect_error', (err) => {
+    alert(err.message);
+  })
+}
+
 let sessions = []
 let drivers = []
 let selectedRaceId = 0
 let raceId = 1
-const maxDriversPerSession = 8
 let driverId = 1
+const maxDriversPerSession = 8
 
 const driverName = document.querySelector("#driver-name")
 const saveDriver = document.querySelector("#save-driver")
@@ -32,7 +49,6 @@ function setUpEventListeners() {
   editRaceButton.addEventListener("click", editRace)
   addToRace.addEventListener("click", addToSession)
 }
-
 
 function saveDriverName() {
   const name = driverName.value.trim()
@@ -75,6 +91,27 @@ function displayDriverNames(newDriver) {
   deleteButton.addEventListener("click", () => deleteName(option, eachDriver, newDriver))
 }
 
+function displayRaceDetail() {
+  raceDrivers.textContent = ""
+  const session = sessions.find((session) => {
+    return session.id === selectedRaceId
+  })
+  if (!session) {
+    return
+  }
+  session.drivers.forEach((input) => {
+    const driver = drivers.find((driver) => {
+      return driver.id === input.driverId
+    })
+    if (!driver) {
+      return
+    }
+    const raceDetailText = document.createElement("p")
+    raceDetailText.textContent = `${driver.name} - Car ${input.car}`
+    raceDrivers.append(raceDetailText)
+  })
+}
+
 function editName(option, driverText, newDriver) {
   const name = prompt("Enter new name", newDriver.name)
   if (name === null) {
@@ -93,7 +130,6 @@ function editName(option, driverText, newDriver) {
   driverText.textContent = newName
   option.textContent = newName
   displayRaceDetail()
-
 }
 
 function deleteName(option, eachDriver, newDriver) {
@@ -214,44 +250,5 @@ function addToSession() {
   session.drivers.push({ driverId: id, car: car })
   chooseDriver.value = ""
   chooseCar.value = ""
-  console.log(session)
   displayRaceDetail()
-}
-
-function displayRaceDetail() {
-  raceDrivers.textContent = ""
-  const session = sessions.find((session) => {
-    return session.id === selectedRaceId
-  })
-  if (!session) {
-    return
-  }
-  session.drivers.forEach((input) => {
-    const driver = drivers.find((driver) => {
-      return driver.id === input.driverId
-    })
-    if (!driver) {
-      return
-    }
-    const raceDetailText = document.createElement("p")
-    raceDetailText.textContent = `${driver.name} - Car ${input.car}`
-    raceDrivers.append(raceDetailText)
-  })
-}
-
-// Create socket without connecting (only attempt on form submission)
-const frontDeskSocket = io("/front-desk", { autoConnect: false });
-setSocketListeners(frontDeskSocket);
-setupKeyForm(frontDeskSocket);
-
-function setSocketListeners(socket) {
-  socket.on('connect', () => {
-    alert("connected");
-    document.body.querySelector('.key-form').classList.add('hidden');
-    document.body.querySelector('.front-desk-view').classList.remove('hidden');
-  })
-
-  socket.on('connect_error', (err) => {
-    alert(err.message);
-  })
 }
