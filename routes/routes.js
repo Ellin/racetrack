@@ -6,7 +6,7 @@ const router = express.Router();
 // Get absolute path of public directory
 const publicDir = path.resolve(import.meta.dirname, "../public");
 
-//front-desk
+// Front-desk
 router.get('/front-desk', (req, res) => {
     res.sendFile(path.join(publicDir, 'employee/front-desk/front-desk.html'));
 });

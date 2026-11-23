@@ -1,35 +1,144 @@
-// let driver = { name: undefined, car: undefined }
 let sessions = []
+let drivers = []
+let selectedRaceId = 0
+let raceId = 1
+const maxDriversPerSession = 8
+let driverId = 1
+
+const driverName = document.querySelector("#driver-name")
+const saveDriver = document.querySelector("#save-driver")
+const driverList = document.querySelector("#driver-list")
+
 const createSessionButton = document.querySelector("#create-race")
 const raceList = document.querySelector("#race-list")
 const selectedRace = document.querySelector("#selected-race-name")
-let selectedRaceId = 0
-let i = 1
 
-createSessionButton.addEventListener("click", () => {
 
-  const newRace = { id: i, drivers: [] }
+const editRaceButton = document.querySelector("#edit-race")
+const editRaceForm = document.querySelector("#edit-race-form")
+const chooseDriver = document.querySelector("#choose-driver")
+const chooseCar = document.querySelector("#choose-car")
+
+const addToRace = document.querySelector("#add-to-race")
+const raceDrivers = document.querySelector("#race-drivers")
+const deleteRaceButton = document.querySelector("#delete-race")
+
+setUpEventListeners()
+
+function setUpEventListeners() {
+  saveDriver.addEventListener("click", saveDriverName)
+  createSessionButton.addEventListener("click", createSession)
+  deleteRaceButton.addEventListener("click", deleteSession)
+  editRaceButton.addEventListener("click", editRace)
+  addToRace.addEventListener("click", addToSession)
+}
+
+
+function saveDriverName() {
+  const name = driverName.value.trim()
+  if (name === "") {
+    alert("Enter a name")
+    return
+  }
+  if (driverNameExists(drivers, name)) {
+    alert("Name already exists")
+    return
+  }
+  const newDriver = { id: driverId, name: name }
+  drivers.push(newDriver)
+  driverId++
+
+  displayDriverNames(newDriver)
+  driverName.value = ""
+}
+
+function displayDriverNames(newDriver) {
+  const option = document.createElement("option")
+  option.value = newDriver.id
+  option.textContent = newDriver.name
+  chooseDriver.appendChild(option)
+
+  const eachDriver = document.createElement("div")
+  const driverText = document.createElement("span")
+  const deleteButton = document.createElement("button")
+  const editButton = document.createElement("button")
+
+  driverText.textContent = newDriver.name
+  deleteButton.textContent = "Delete"
+  editButton.textContent = "Edit"
+  eachDriver.appendChild(driverText)
+  eachDriver.appendChild(editButton)
+  eachDriver.appendChild(deleteButton)
+  driverList.appendChild(eachDriver)
+
+  editButton.addEventListener("click", () => editName(option, driverText, newDriver))
+  deleteButton.addEventListener("click", () => deleteName(option, eachDriver, newDriver))
+}
+
+function editName(option, driverText, newDriver) {
+  const name = prompt("Enter new name", newDriver.name)
+  if (name === null) {
+    return
+  }
+  const newName = name.trim()
+  if (newName === "") {
+    alert("Enter a name")
+    return
+  }
+  if (newDriver.name.toLowerCase() !== newName.toLowerCase() && driverNameExists(drivers, name)) {
+    alert("Name already exists")
+    return
+  }
+  newDriver.name = name
+  driverText.textContent = newName
+  option.textContent = newName
+  displayRaceDetail()
+
+}
+
+function deleteName(option, eachDriver, newDriver) {
+  drivers = drivers.filter((driver) => {
+    return driver.id !== newDriver.id
+  })
+
+  sessions.forEach((session) => {
+    session.drivers = session.drivers.filter((driver) => {
+      return driver.driverId !== newDriver.id
+    })
+  })
+  eachDriver.remove()
+  option.remove()
+  displayRaceDetail()
+}
+
+function createSession() {
+  const newRace = { id: raceId, drivers: [] }
   sessions.push(newRace)
-  i++
-
-  // console.log("created a race", newRace)
-  // console.log("all sessions", sessions)
+  raceId++
 
   const raceButton = document.createElement("button")
   raceButton.textContent = `Race ${newRace.id}`
   raceButton.id = `race-${newRace.id}`
   raceList.appendChild(raceButton)
+  raceButton.addEventListener("click", () => selectRace(newRace))
+}
 
-  raceButton.addEventListener("click", () => {
-    selectedRaceId = newRace.id
-    selectedRace.textContent = `Race ${newRace.id}`
-    editRaceForm.hidden = true
-    displayRaceDetail()
-  })
-})
+function selectRace(newRace) {
+  selectedRaceId = newRace.id
+  selectedRace.textContent = `Race ${newRace.id}`
+  editRaceForm.hidden = true
+  displayRaceDetail()
+}
 
-const deleteRaceButton = document.querySelector("#delete-race")
-deleteRaceButton.addEventListener("click", () => {
+function editRace() {
+  if (selectedRaceId === 0) {
+    alert("select a race")
+    return
+  }
+  editRaceForm.hidden = false
+}
+
+function deleteSession() {
   if (selectedRaceId === 0) {
     alert("Select a Race")
     return
@@ -45,86 +154,13 @@ deleteRaceButton.addEventListener("click", () => {
   selectedRace.textContent = "Nothing selected"
   selectedRaceId = 0
   if (sessions.length === 0) {
-    i = 1
+    raceId = 1
   }
   editRaceForm.hidden = true
   displayRaceDetail()
-})
+}
 
-let drivers = []
-let driverId = 1
-
-const driverName = document.querySelector("#driver-name")
-const saveDriver = document.querySelector("#save-driver")
-const driverList = document.querySelector("#driver-list")
-
-saveDriver.addEventListener("click", () => {
-  const name = driverName.value.trim()
-  if (name === "") {
-    alert("Enter a name")
-    return
-  }
-  if (duplicatName(drivers, name)) {
-    alert("Name already exists")
-    return
-  }
-  const newDriver = { id: driverId, name: name }
-  drivers.push(newDriver)
-  driverId++
-
-  const option = document.createElement("option")
-  option.value = newDriver.id
-  option.textContent = newDriver.name
-  chooseDriver.appendChild(option)
-
-  // console.log("all drivers:", drivers)
-
-  const eachDriver = document.createElement("div")
-  const driverText = document.createElement("span")
-  const deleteButton = document.createElement("button")
-  const editButton = document.createElement("button")
-
-  driverText.textContent = newDriver.name
-  deleteButton.textContent = "Delete"
-  editButton.textContent = "Edit"
-  eachDriver.appendChild(driverText)
-  eachDriver.appendChild(editButton)
-  eachDriver.appendChild(deleteButton)
-  driverList.appendChild(eachDriver)
-
-  editButton.addEventListener("click", () => {
-    const name = prompt("Enter new name", newDriver.name)
-    if (name === null) {
-      return
-    }
-    const newName = name.trim()
-    if (newName === "") {
-      alert("Enter a name")
-      return
-    }
-    if (duplicatName(drivers, name)) {
-      alert("Name already exists")
-      return
-    }
-    newDriver.name = name
-    driverText.textContent = newName
-    option.textContent = newName
-    displayRaceDetail()
-  })
-  driverName.value = ""
-  deleteButton.addEventListener("click", () => {
-    drivers = drivers.filter((driver) => {
-      return driver.id !== newDriver.id
-    })
-
-    eachDriver.remove()
-    option.remove()
-    displayRaceDetail()
-  })
-
-})
-
-const duplicatName = (arr, name) => {
+const driverNameExists = (arr, name) => {
   for (const obj of arr) {
     if (obj.name.toLowerCase() === name.toLowerCase()) {
       return true
@@ -133,31 +169,14 @@ const duplicatName = (arr, name) => {
   return false
 }
 
-const editRaceButton = document.querySelector("#edit-race")
-const editRaceForm = document.querySelector("#edit-race-form")
-const chooseDriver = document.querySelector("#choose-driver")
-const chooseCar = document.querySelector("#choose-car")
-
-for (let j = 1; j <= 8; j++) {
+for (let j = 1; j <= maxDriversPerSession; j++) {
   const option = document.createElement("option")
   option.value = j
   option.textContent = `Car ${j}`
   chooseCar.appendChild(option)
 }
 
-editRaceButton.addEventListener("click", () => {
-  if (selectedRaceId === 0) {
-    alert("select a race")
-    return
-  }
-
-  editRaceForm.hidden = false
-
-})
-const addToRace = document.querySelector("#add-to-race")
-const raceDrivers = document.querySelector("#race-drivers")
-
-addToRace.addEventListener("click", () => {
+function addToSession() {
   const session = sessions.find((session) => {
     return session.id === selectedRaceId
   })
@@ -174,7 +193,7 @@ addToRace.addEventListener("click", () => {
   const id = Number(chooseDriver.value)
   const car = Number(chooseCar.value)
 
-  if (session.drivers.length >= 8) {
+  if (session.drivers.length >= maxDriversPerSession) {
     alert("Maximum 8 drivers allowed")
     return
   }
@@ -197,7 +216,7 @@ addToRace.addEventListener("click", () => {
   chooseCar.value = ""
   console.log(session)
   displayRaceDetail()
-})
+}
 
 function displayRaceDetail() {
   raceDrivers.textContent = ""
