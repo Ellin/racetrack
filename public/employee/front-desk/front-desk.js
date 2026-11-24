@@ -40,6 +40,7 @@ const addToRace = document.querySelector("#add-to-race")
 const raceDrivers = document.querySelector("#race-drivers")
 const deleteRaceButton = document.querySelector("#delete-race")
 
+createCarsOption()
 setUpEventListeners()
 
 function setUpEventListeners() {
@@ -47,7 +48,15 @@ function setUpEventListeners() {
   createSessionButton.addEventListener("click", createSession)
   deleteRaceButton.addEventListener("click", deleteSession)
   editRaceButton.addEventListener("click", editRace)
-  addToRace.addEventListener("click", addToSession)
+  addToRace.addEventListener("click", addDriverDetailToSession)
+}
+function createCarsOption() {
+  for (let carId = 1; carId <= maxDriversPerSession; carId++) {
+    const option = document.createElement("option")
+    option.value = carId
+    option.textContent = `Car ${carId}`
+    chooseCar.appendChild(option)
+  }
 }
 
 function saveDriverName() {
@@ -205,14 +214,7 @@ const driverNameExists = (arr, name) => {
   return false
 }
 
-for (let j = 1; j <= maxDriversPerSession; j++) {
-  const option = document.createElement("option")
-  option.value = j
-  option.textContent = `Car ${j}`
-  chooseCar.appendChild(option)
-}
-
-function addToSession() {
+function addDriverDetailToSession() {
   const session = sessions.find((session) => {
     return session.id === selectedRaceId
   })
