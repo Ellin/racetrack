@@ -3,6 +3,12 @@ const frontDeskSocket = io("/front-desk", { autoConnect: false });
 setSocketListeners(frontDeskSocket);
 setupKeyForm(frontDeskSocket);
 
+let sessions = []
+let drivers = []
+let selectedRaceId = 0
+let driverId = 1
+const maxDriversPerSession = 8
+
 function setSocketListeners(socket) {
   socket.on('connect', () => {
     alert("connected");
@@ -11,16 +17,14 @@ function setSocketListeners(socket) {
   })
 
   socket.on('connect_error', (err) => {
-    alert(err.message);
+    console.log(err.message);
+    return
+  })
+  socket.on('updateSessions', (updatedSessions) => {
+    sessions = updatedSessions
+    displaySessions()
   })
 }
-
-let sessions = []
-let drivers = []
-let selectedRaceId = 0
-let raceId = 1
-let driverId = 1
-const maxDriversPerSession = 8
 
 const driverName = document.querySelector("#driver-name")
 const saveDriver = document.querySelector("#save-driver")
@@ -157,15 +161,18 @@ function deleteName(option, eachDriver, newDriver) {
 }
 
 function createSession() {
-  const newRace = { id: raceId, drivers: [] }
-  sessions.push(newRace)
-  raceId++
+  frontDeskSocket.emit("sessionCreate")
+}
 
-  const raceButton = document.createElement("button")
-  raceButton.textContent = `Race ${newRace.id}`
-  raceButton.id = `race-${newRace.id}`
-  raceList.appendChild(raceButton)
-  raceButton.addEventListener("click", () => selectRace(newRace))
+function displaySessions() {
+  raceList.textContent = ""
+  sessions.forEach((session) => {
+    const raceButton = document.createElement("button")
+    raceButton.textContent = `Race ${session.id}`
+    raceButton.id = `race-${session.id}`
+    raceList.appendChild(raceButton)
+    raceButton.addEventListener("click", () => selectRace(session))
+  })
 }
 
 function selectRace(newRace) {
