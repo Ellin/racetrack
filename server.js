@@ -11,12 +11,22 @@ const io = new Server(server); // io is the Socket.IO server, which manages ALL 
 
 const safetyNamespace = io.of("/race-control");
 const receptionistNamespace = io.of("/front-desk");
-
-
+let sessions = []
+let raceId = 1
 // Use authentication middleware
 safetyNamespace.use(requireKey(keys.safety));
 receptionistNamespace.use(requireKey(keys.receptionist));
 
+receptionistNamespace.on("connection", (receptionistSocket) => {
+    receptionistSocket.emit("updateSessions", sessions)
+    receptionistSocket.on("sessionCreate", () => {
+        const newRace = { id: raceId, drivers: [] }
+        sessions.push(newRace)
+        raceId++
+        // console.log("receptionist requested a race", newRace)
+        receptionistSocket.emit("updateSessions", sessions)
+    })
+})
 
 // Serve static files from the 'public' folder
 app.use(express.static('public'));
