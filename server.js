@@ -4,6 +4,7 @@ import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import router from './routes/routes.js';
+import { RaceStatus } from "./shared/constants.js";
 
 const app = express();
 const server = createServer(app); // Create a Node.js HTTP server that uses the Express app to handle HTT
@@ -11,11 +12,19 @@ const io = new Server(server); // io is the Socket.IO server, which manages ALL 
 
 const safetyNamespace = io.of("/race-control");
 const receptionistNamespace = io.of("/front-desk");
+
+// State data
 let sessions = []
 let raceId = 1
+let raceStatus = RaceStatus.waiting;
+
 // Use authentication middleware
 safetyNamespace.use(requireKey(keys.safety));
 receptionistNamespace.use(requireKey(keys.receptionist));
+
+safetyNamespace.on('connection', (socket) => {
+    socket.emit('initialData', raceStatus, sessions);
+})
 
 receptionistNamespace.on("connection", (receptionistSocket) => {
     receptionistSocket.emit("updateSessions", sessions)
@@ -28,8 +37,9 @@ receptionistNamespace.on("connection", (receptionistSocket) => {
     })
 })
 
-// Serve static files from the 'public' folder
+// Serve static files from these folders:
 app.use(express.static('public'));
+app.use('/shared', express.static('shared'));
 
 // Routers
 app.use('/', router);

@@ -6,12 +6,20 @@
     <link rel="stylesheet" href="/employee/race-control/start-race.css">
     <script src="/socket.io/socket.io.js" defer></script>
     <script src="/shared/key-form.js" defer></script>
-    <script src="/employee/race-control/start-race.js" defer></script>
+    <script type="module" src="/employee/race-control/start-race.js" defer></script>
     <title>Start Race</title>
 </head>
 <body>
     <div class="start-race-view hidden">
-        <button>START RACE</button>
+        <button id="start-race">START RACE</button>
+    </div>
+
+    <div class="race-mode-view hidden">
+        RACE MODE VIEW
+    </div>
+
+    <div class="end-session-view hidden">
+        END SESSION VIEW
     </div>
 </body>
 </html>
