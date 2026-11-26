@@ -1,4 +1,4 @@
-import { RaceStatus } from '/shared/constants.js';
+import { RaceControlView } from '/shared/constants.js';
 
 // Create socket without connecting (only attempt on form submission)
 const safetySocket = io("/race-control", { autoConnect: false });
@@ -28,9 +28,13 @@ function setSocketListeners(socket) {
         hideControlViews();
     })
 
-    socket.on('initialData', (raceStatus, sessions) => {
-        console.log("raceStatus:", raceStatus, "sessions:", sessions);
-        displayControlView(raceStatus, sessions);
+    socket.on('initialData', (raceControlView, sessions) => {
+        console.log("raceControlView:", raceControlView, "sessions:", sessions);
+        displayControlView(raceControlView, sessions);
+    })
+
+    socket.on('startRace', () => {
+        displayRaceModeView();
     })
 }
 
@@ -40,18 +44,18 @@ function setEventListeners() {
     })
 }
 
-// displayControlView shows the race control interface view according to the race status
-function displayControlView(raceStatus, sessions) {
-        switch (raceStatus) {
-        case RaceStatus.waiting:
+// displayControlView shows the correct race control interface view
+function displayControlView(raceControlView, sessions) {
+        hideControlViews();
+        
+        switch (raceControlView) {
+        case RaceControlView.waiting:
             displayNextRaceData(sessions);
-            startRaceView.classList.remove('hidden');
             break;
-        case RaceStatus.running:
-            console.log('running');
-            raceModeView.classList.remove('hidden');
+        case RaceControlView.running:
+            displayRaceModeView();
             break;
-        case RaceStatus.finished:
+        case RaceControlView.finished:
             console.log('finished');
             endSessionView.classList.remove('hidden');
             break;
@@ -69,6 +73,7 @@ function hideControlViews() {
 // displayNextRaceData constructs and displays the next race view,
 // showing the upcoming race data along with a start race button.
 function displayNextRaceData(sessions) {
+    startRaceView.classList.remove('hidden');
     startRaceView.innerHTML = '';
 
     if (sessions.length === 0) {
@@ -104,4 +109,15 @@ function displayNextRaceData(sessions) {
     });
 
     startRaceView.appendChild(startRaceBtn);
+}
+
+function displayRaceModeView() {
+    raceModeView.classList.remove('hidden');
+    
+    raceModeView.innerHTML = `
+        <h1>Control race modes</h1>
+        <button>Safe</button>
+        <button>Hazard</button>
+        <button>Danger</button>
+        <button>Finish</button>`;    
 }

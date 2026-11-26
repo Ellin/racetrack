@@ -4,7 +4,7 @@ import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import router from './routes/routes.js';
-import { RaceStatus } from "./shared/constants.js";
+import { RaceControlView, RaceMode } from "./shared/constants.js";
 
 const app = express();
 const server = createServer(app); // Create a Node.js HTTP server that uses the Express app to handle HTT
@@ -16,14 +16,22 @@ const receptionistNamespace = io.of("/front-desk");
 // State data
 let sessions = []
 let raceId = 1
-let raceStatus = RaceStatus.waiting;
+let raceControlView = RaceControlView.waiting;
+let raceMode = RaceMode.danger;
 
 // Use authentication middleware
 safetyNamespace.use(requireKey(keys.safety));
 receptionistNamespace.use(requireKey(keys.receptionist));
 
 safetyNamespace.on('connection', (socket) => {
-    socket.emit('initialData', raceStatus, sessions);
+    socket.emit('initialData', raceControlView, sessions);
+    socket.on('startRace', () => {
+        raceControlView = RaceControlView.running;
+        raceMode = RaceMode.safe;
+        socket.emit('startRace');
+
+        // TODO: Emit 'changeRaceMode' event 
+    })
 })
 
 receptionistNamespace.on("connection", (receptionistSocket) => {
