@@ -29,10 +29,25 @@ safetyNamespace.on('connection', (socket) => {
         raceControlView = RaceControlView.running;
         raceMode = RaceMode.safe;
         socket.emit('startRace');
-
         // TODO: Emit 'changeRaceMode' event 
+    });
+    socket.on('changeRaceMode', (newMode) => {
+        if (changeRaceMode(newMode)) {
+            socket.emit('changeRaceMode', raceMode);
+            // TODO: Emit 'changeRaceMode' event to other interfaes
+        }
     })
 })
+
+// changeRaceMode attempts to change the race mode and returns a boolean indicating if the change was successful
+function changeRaceMode(newMode) {
+    if (raceMode === RaceMode.finish) {
+        console.log('error: cannot change race mode when race mode is finish');
+        return false;
+    }
+    raceMode = newMode;
+    return true;
+}
 
 receptionistNamespace.on("connection", (receptionistSocket) => {
     receptionistSocket.emit("updateSessions", sessions)

@@ -1,4 +1,4 @@
-import { RaceControlView } from '/shared/constants.js';
+import { RaceControlView, RaceMode } from '/shared/constants.js';
 
 // Create socket without connecting (only attempt on form submission)
 const safetySocket = io("/race-control", { autoConnect: false });
@@ -36,18 +36,36 @@ function setSocketListeners(socket) {
     socket.on('startRace', () => {
         displayRaceModeView();
     })
+
+    socket.on('changeRaceMode', (newMode) => {
+        alert(newMode);
+    })
 }
 
 function setEventListeners() {
     startRaceBtn.addEventListener("click", () => {
         safetySocket.emit('startRace');
     })
+
+    document.querySelector("#safe").addEventListener("click", () => {
+        safetySocket.emit('changeRaceMode', RaceMode.safe);
+    })
+
+    document.querySelector("#hazard").addEventListener("click", () => {
+        safetySocket.emit('changeRaceMode', RaceMode.hazard);
+    })
+
+    document.querySelector("#danger").addEventListener("click", () => {
+        safetySocket.emit('changeRaceMode', RaceMode.danger);
+    })
+
+    document.querySelector("#finish").addEventListener("click", () => {
+        safetySocket.emit('changeRaceMode', RaceMode.finish);
+    })
 }
 
 // displayControlView shows the correct race control interface view
 function displayControlView(raceControlView, sessions) {
-        hideControlViews();
-        
         switch (raceControlView) {
         case RaceControlView.waiting:
             displayNextRaceData(sessions);
@@ -112,12 +130,6 @@ function displayNextRaceData(sessions) {
 }
 
 function displayRaceModeView() {
-    raceModeView.classList.remove('hidden');
-    
-    raceModeView.innerHTML = `
-        <h1>Control race modes</h1>
-        <button>Safe</button>
-        <button>Hazard</button>
-        <button>Danger</button>
-        <button>Finish</button>`;    
+    hideControlViews();
+    raceModeView.classList.remove('hidden');  
 }
